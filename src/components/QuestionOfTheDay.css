@@ -1,0 +1,10 @@
+.question-of-the-day {
+    margin: 20px 0;
+  }
+  
+  .question-of-the-day button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
