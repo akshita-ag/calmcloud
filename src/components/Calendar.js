@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import './Calendar.css';
+import React, { useState } from "react";
+import "./Calendar.css";
 
 const moodColors = {
-  happy: 'yellow',
-  sad: 'lightblue',
-  anxious: 'orange',
-  neutral: 'bisque',
-  angry: 'lightcoral',
+  happy: "yellow",
+  sad: "lightblue",
+  anxious: "orange",
+  neutral: "bisque",
+  angry: "lightcoral",
 };
 
 function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [selectedMood, setSelectedMood] = useState('neutral');
-
-  useEffect(() => {
-    console.log("hello")
-    generateCalendar();
-  }, [currentMonth, currentYear]);
+  const [selectedMood, setSelectedMood] = useState("neutral");
 
   const changeMonth = (delta) => {
     setCurrentMonth((prev) => {
@@ -35,11 +30,23 @@ function Calendar() {
 
   const generateMonthOptions = () => {
     const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     return monthNames.map((month, index) => (
-      <option value={index} key={index}>{month}</option>
+      <option value={index} key={index}>
+        {month}
+      </option>
     ));
   };
 
@@ -49,31 +56,28 @@ function Calendar() {
       years.push(year);
     }
     return years.map((year) => (
-      <option value={year} key={year}>{year}</option>
+      <option value={year} key={year}>
+        {year}
+      </option>
     ));
   };
 
   const generateCalendar = () => {
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = '';
-    
+    const dayFields = [];
+
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    
+
     // Fill initial empty slots
     for (let i = 0; i < firstDay; i++) {
-      const emptyCell = document.createElement('div');
-      calendar.appendChild(emptyCell);
+      dayFields.push(<div />);
     }
-    
+
     for (let day = 1; day <= daysInMonth; day++) {
-      const dayElement = document.createElement('div');
-      dayElement.textContent = day;
-      dayElement.onclick = function() {
-        dayElement.style.backgroundColor = moodColors[selectedMood];
-      };
-      calendar.appendChild(dayElement);
+      dayFields.push(<DayBlock text={day} selectedMood={selectedMood} />);
     }
+
+    return dayFields;
   };
 
   return (
@@ -107,14 +111,16 @@ function Calendar() {
         <div>Sat</div>
       </div>
       <div className="calendar" id="calendar">
-        {/* Calendar dates will be dynamically added here */}
+        {generateCalendar()}
       </div>
       <div className="mood-selector">
         <label htmlFor="calendarMood">Select Mood:</label>
         <select
           id="calendarMood"
           value={selectedMood}
-          onChange={(e) => {console.log(e.target.value); setSelectedMood(e.target.value); e.target.style.backgroundColor= moodColors[e.target.value]}}
+          onChange={(e) => {
+            setSelectedMood(e.target.value);
+          }}
         >
           <option value="happy">Happy</option>
           <option value="sad">Sad</option>
@@ -126,5 +132,17 @@ function Calendar() {
     </div>
   );
 }
- 
+
+const DayBlock = ({ text, selectedMood }) => {
+  const [bgColor, setBgColor] = useState("transparent");
+  const handleOnClick = () => {
+    setBgColor(moodColors[selectedMood]);
+  };
+  return (
+    <div style={{ backgroundColor: bgColor }} onClick={handleOnClick}>
+      {text}
+    </div>
+  );
+};
+
 export default Calendar;
